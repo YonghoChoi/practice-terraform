@@ -1,9 +1,51 @@
-#  Local .terraform directories
-**/.terraform/*
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
 
-# .tfstate files
-*.tfstate
-*.tfstate.*
+# Folder config file
+Desktop.ini
 
-# .tfvars files
-*.tfvars
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+*.log
+*.bak
+*.exe
+tmp/runner-build.exe~
+runner.conf
+devenv.bat
+node_modules
+debug
+debug.test
+
+# Etc Folders
+bin
+ssl
+tmp
+plug-ins
+logs
+
+# Jetbrains Folders
+.idea
+
+# Terraform
+.terraform*
+terraform.tfstate
+terraform.tfstate.backup
+planfile
+
+# go
+go.mod
+go.sum
+
+# debug
+__debug_bin
