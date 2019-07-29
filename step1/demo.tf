@@ -24,8 +24,8 @@ data "aws_ssm_parameter" "ec2-password" {
 }
 
 resource "aws_instance" "demo" {
-  ami                  = "${var.ubuntu_ami}"
-  availability_zone    = "${var.az_1}"
+  ami                  = "${data.aws_ami.ubuntu.id}"
+  availability_zone    = "${data.aws_availability_zones.available.names[0]}"
   key_name             = "${var.key_pair}"
   instance_type        = "t2.micro"
   count                = "${var.demo_web_instance_count}"

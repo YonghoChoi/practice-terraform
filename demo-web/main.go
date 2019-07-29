@@ -105,7 +105,7 @@ func login(c web.C, w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/irene_demo", dbUsername, dbPassword, dbEndpoint))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/demo", dbUsername, dbPassword, dbEndpoint))
 	if err != nil {
 		fmt.Fprintf(w, "Login 실패!\n데이터베이스에 연결할 수 없습니다.")
 		return
