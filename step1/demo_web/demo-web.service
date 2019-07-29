@@ -1,0 +1,10 @@
+[Unit]
+Description=irene-demo web service
+
+[Service]
+WorkingDirectory=/home/ubuntu/demo-web
+ExecStart=/home/ubuntu/demo-web/run.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
