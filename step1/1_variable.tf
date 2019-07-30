@@ -4,7 +4,8 @@ variable "region" {
 
 variable "ec2" {
   default = {
-    name = "demo_web"
+    web_name = "demo_web"
+    db_name = "demo_db"
     instance_type = "t2.micro"
     key_pair = "yongho1037" 
     password_parameter_name = "ec2-ubuntu-password"
@@ -16,7 +17,7 @@ variable "ec2" {
 
 variable "ip" {
   default = {
-    vpn = "0.0.0.0/0"
+    vpn = "119.206.206.251/32"
   }
 }
 
