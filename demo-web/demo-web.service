@@ -1,5 +1,5 @@
 [Unit]
-Description=irene-demo web service
+Description=demo web service
 
 [Service]
 WorkingDirectory=/home/ubuntu/demo-web
