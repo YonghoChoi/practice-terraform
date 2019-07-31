@@ -6,15 +6,21 @@ resource "null_resource" "run_coomand" {
     host        = "${aws_instance.demo_k8s.public_ip}"
   }
 
+  provisioner "file" {
+    source      = "${path.module}/sample"
+    destination = "/home/ubuntu/sample"
+  }
+
   provisioner "remote-exec" {
-    inline = [<<EOF
-until sudo kubectl get nodes &> /dev/null
-do
-    echo "Waiting for provisioning kubernetes ..."
-    sleep 5
-done
-sudo kubectl create -f ~/sample/guestbook.yml
-    EOF
+    inline = [
+      "sudo apt-get install -y dos2unix",
+      "dos2unix ~/sample/run.sh",
+      "chmod +x ~/sample/run.sh",
+      "~/sample/run.sh",
+      "sudo kubectl create -f ~/sample/guestbook.yml",
+      "sleep 10",
+      "sudo kubectl get pods",
+      "sudo kubectl get services",
     ]
   }
 

@@ -33,7 +33,7 @@ service sshd restart
   }
 
   provisioner "file" {
-    source      = "${path.module}/sample/"
+    source      = "${path.module}/sample"
     destination = "/home/ubuntu/sample"
   }
 
@@ -58,6 +58,7 @@ service sshd restart
     when    = "destroy"
     inline = [
       "sudo kops delete cluster --name ${var.kops["cluster_name"]} --state s3://${var.kops["state_bucket_name"]} --yes",
+      "sleep 30",
     ]
   }
 }
