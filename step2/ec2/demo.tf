@@ -45,6 +45,7 @@ service sshd restart
       "sudo mv ~/metricbeat.yml /etc/metricbeat/metricbeat.yml",
       "sudo systemctl enable metricbeat.service",
       "sudo service metricbeat start",
+      "sudo metricbeat setup --dashboards",
       "sleep 20"
     ]
   }
