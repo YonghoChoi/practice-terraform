@@ -42,7 +42,7 @@ service sshd restart
   }
 
   provisioner "file" {
-    source      = "${path.module}/demo-db"
+    source      = "${path.module}/../demo-db"
     destination = "/home/ubuntu/demo-db"
   }
 

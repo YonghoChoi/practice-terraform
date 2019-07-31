@@ -25,6 +25,12 @@ service sshd restart
     Name = "${var.ec2["web_name"]}"
   }
 
+  provisioner "local-exec" {
+    working_dir = "${path.module}/../demo-web"
+    command = "./build.bat"
+    interpreter = ["PowerShell"]
+  }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"
@@ -33,7 +39,7 @@ service sshd restart
   }
 
   provisioner "file" {
-    source      = "${path.module}/demo-web"
+    source      = "${path.module}/../demo-web/bin"
     destination = "/home/ubuntu/demo-web"
   }
 
