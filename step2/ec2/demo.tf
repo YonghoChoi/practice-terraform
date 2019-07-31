@@ -38,7 +38,7 @@ service sshd restart
 
   provisioner "remote-exec" {
     inline = [
-      "sed -i 's/change-es-host/${aws_instance.demo.private_ip}/g' ~/metricbeat.yml",
+      "sed -i 's/change-es-host/${aws_instance.demo_es.private_ip}/g' ~/metricbeat.yml",
       "curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.2.0-amd64.deb",
       "sudo dpkg -i metricbeat-7.2.0-amd64.deb",
       "rm -rf metricbeat-7.2.0-amd64.deb",
