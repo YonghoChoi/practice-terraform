@@ -63,5 +63,5 @@ service sshd restart
     ]
   }
 
-  depends_on = [aws_instance.demo_db]
+  depends_on = ["aws_instance.demo_db"]
 }

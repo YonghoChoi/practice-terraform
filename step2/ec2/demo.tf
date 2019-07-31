@@ -1,35 +1,8 @@
-data "terraform_remote_state" "vpc_data" {
-    backend = "local"
-    config = {
-        path = "${path.module}/../vpc/terraform.tfstate"
-    }
-}
-
-data "terraform_remote_state" "sg_data" {
-    backend = "local"
-    config = {
-        path = "${path.module}/../security_group/terraform.tfstate"
-    }
-}
-
-data "terraform_remote_state" "iam_role_data" {
-    backend = "local"
-    config = {
-        path = "${path.module}/../iam/terraform.tfstate"
-    }
-}
-
-data "aws_ssm_parameter" "ec2-password" {
-  name = "${var.ec2_passwd_prameter_name}"
-}
-
 resource "aws_instance" "demo" {
-  ami                  = "${var.ubuntu_ami}"
-  availability_zone    = "${var.az_1}"
-  key_name             = "${var.key_pair}"
-  instance_type        = "t2.micro"
-  count                = "${var.demo_web_instance_count}"
-  iam_instance_profile = "${data.terraform_remote_state.iam_role_data.outputs.demo_iam_instance_profile_name}"
+  ami                  = "${data.aws_ami.ubuntu.id}"
+  availability_zone    = "${data.aws_availability_zones.available.names[0]}"
+  key_name             = "${var.ec2_demo["key_pair"]}"
+  instance_type        = "${var.ec2_demo["instance_type"]}"
   vpc_security_group_ids = [
     "${data.terraform_remote_state.sg_data.outputs.demo_sg_id}",
   ]
@@ -38,13 +11,17 @@ resource "aws_instance" "demo" {
   associate_public_ip_address = true
   user_data = <<EOF
 #!/bin/bash
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common awscli unzip dos2unix
+
+# set password
 echo "ubuntu:${data.aws_ssm_parameter.ec2-password.value}" | chpasswd
 sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
 service sshd restart
   EOF
 
   tags = {
-    Name = "demo"
+    Name = "${var.ec2_demo["name"]}"
   }
 
   connection {
@@ -54,60 +31,23 @@ service sshd restart
     host        = "${self.public_ip}"
   }
 
+  provisioner "file" {
+    source      = "${path.module}/conf/metricbeat.yml"
+    destination = "/home/ubuntu/metricbeat.yml"
+  }
+
   provisioner "remote-exec" {
     inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y curl awscli unzip",
-      "sudo mkdir /opt/demo-web",
-      "sudo aws s3 cp s3://yongho1037-demo/demo-web/demo-web.zip /opt/demo-web/demo-web.zip",
-      "cd /opt/demo-web",
-      "sudo unzip demo-web.zip",
-      "sudo chmod +x demo-web",
-      "sudo nohup ./demo-web &",
+      "sed -i 's/change-es-host/${aws_instance.demo.private_ip}/g' ~/metricbeat.yml",
+      "curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.2.0-amd64.deb",
+      "sudo dpkg -i metricbeat-7.2.0-amd64.deb",
+      "rm -rf metricbeat-7.2.0-amd64.deb",
+      "sudo mv ~/metricbeat.yml /etc/metricbeat/metricbeat.yml",
+      "sudo systemctl enable metricbeat.service",
+      "sudo service metricbeat start",
       "sleep 20"
     ]
   }
 
-  provisioner "remote-exec" {
-    when = "destroy"
-    inline = [
-      "ps -ef | grep demo-web",
-    ]
-  }
-}
-
-resource "aws_elb" "demo" {
-  name               = "demo-elb"
-  subnets = ["${data.terraform_remote_state.vpc_data.outputs.demo_public_subnet_1_id}"]
-
-  listener {
-    instance_port     = 8000
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "HTTP:8000/"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-  security_groups = ["${data.terraform_remote_state.sg_data.outputs.demo_sg_id}"]
-
-  tags = {
-    Name = "demo-elb"
-  }
-}
-
-resource "aws_elb_attachment" "demo" {
-  count = "${var.demo_web_instance_count}"
-  elb      = "${aws_elb.demo.id}"
-  instance = "${element(aws_instance.demo.*.id, count.index)}"
+  depends_on = ["aws_instance.demo_es"]
 }

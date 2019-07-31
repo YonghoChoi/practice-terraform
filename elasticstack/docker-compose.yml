@@ -3,6 +3,7 @@ services:
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
     container_name: es01
+    restart: always
     environment:
       - node.name=es01
       - discovery.seed_hosts=es02
@@ -23,6 +24,7 @@ services:
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
     container_name: es02
+    restart: always
     environment:
       - node.name=es02
       - discovery.seed_hosts=es01
@@ -36,6 +38,17 @@ services:
         hard: -1
     volumes:
       - esdata02:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    container_name: kibana
+    restart: always
+    environment:
+      SERVER_NAME: irene.kinaba
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    ports:
+      - 5601:5601
     networks:
       - esnet
 
