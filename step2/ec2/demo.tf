@@ -43,6 +43,7 @@ service sshd restart
       "sudo dpkg -i metricbeat-7.2.0-amd64.deb",
       "rm -rf metricbeat-7.2.0-amd64.deb",
       "sudo mv ~/metricbeat.yml /etc/metricbeat/metricbeat.yml",
+      "sudo chown root:root /etc/metricbeat/metricbeat.yml",
       "sudo systemctl enable metricbeat.service",
       "sudo service metricbeat start",
       "sudo metricbeat setup --dashboards",
