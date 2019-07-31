@@ -13,7 +13,7 @@ resource "aws_instance" "demo_k8s" {
   user_data = <<EOF
 #!/bin/bash
 apt-get update
-apt-get install -y curl awscli
+apt-get install -y curl awscli dos2unix
 
 # set password
 echo "ubuntu:${data.aws_ssm_parameter.ec2_password.value}" | chpasswd

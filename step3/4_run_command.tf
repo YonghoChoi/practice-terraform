@@ -13,7 +13,6 @@ resource "null_resource" "run_coomand" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt-get install -y dos2unix",
       "dos2unix ~/sample/run.sh",
       "chmod +x ~/sample/run.sh",
       "~/sample/run.sh",
