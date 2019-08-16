@@ -21,7 +21,7 @@ resource "aws_security_group_rule" "web_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "TCP"
-  cidr_blocks       = ["${var.ip["vpn"]}"]
+  cidr_blocks       = ["${var.ip["any_open"]}"]
   security_group_id = "${aws_security_group.demo_db.id}"
 
   lifecycle { create_before_destroy = true }

@@ -21,7 +21,7 @@ resource "aws_security_group_rule" "demo_web_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "TCP"
-  cidr_blocks       = ["${var.ip["vpn"]}"]
+  cidr_blocks       = ["${var.ip["any_open"]}"]
   security_group_id = "${aws_security_group.demo_web.id}"
 
   lifecycle { create_before_destroy = true }
@@ -32,7 +32,7 @@ resource "aws_security_group_rule" "demo_web" {
   from_port         = 8000
   to_port           = 8000
   protocol          = "TCP"
-  cidr_blocks       = ["${var.ip["vpn"]}"]
+  cidr_blocks       = ["${var.ip["any_open"]}"]
   security_group_id = "${aws_security_group.demo_web.id}"
 
   lifecycle { create_before_destroy = true }

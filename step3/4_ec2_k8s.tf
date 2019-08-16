@@ -59,6 +59,7 @@ service sshd restart
     inline = [
       "sudo kops delete cluster --name ${var.kops["cluster_name"]} --state s3://${var.kops["state_bucket_name"]} --yes",
       "sleep 30",
+      "sudo reboot",
     ]
   }
 }

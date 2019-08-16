@@ -18,7 +18,7 @@ variable "ec2" {
 
 variable "ip" {
     default = {
-        vpn = "119.206.206.251/32"
+        any_open = "0.0.0.0/0"
         vpc_range = "172.31.0.0/16"
     }
 }
