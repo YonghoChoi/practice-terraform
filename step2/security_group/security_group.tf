@@ -2,7 +2,7 @@ resource "aws_security_group" "demo" {
   name        = "demo"
   description = "demo server"
 
-  vpc_id = "${data.terraform_remote_state.vpc_data.outputs.demo_vpc_id}"
+  vpc_id = data.terraform_remote_state.vpc_data.outputs.demo_vpc_id
 
   egress {
     from_port   = 0
@@ -22,7 +22,7 @@ resource "aws_security_group_rule" "demo_ssh" {
   to_port           = 22
   protocol          = "TCP"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.demo.id}"
+  security_group_id = aws_security_group.demo.id
 
   lifecycle { create_before_destroy = true }
 }
