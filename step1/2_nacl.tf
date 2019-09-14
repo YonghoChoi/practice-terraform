@@ -1,5 +1,5 @@
 resource "aws_default_network_acl" "demo_default" {
-  default_network_acl_id = "${aws_vpc.demo.default_network_acl_id}"
+  default_network_acl_id = aws_vpc.demo.default_network_acl_id
 
   ingress {              //들어오는 트래픽(Inbound) 설정
     protocol   = -1      //프로토콜을 지정 (-1인 경우 모든 프로토콜)
@@ -20,8 +20,8 @@ resource "aws_default_network_acl" "demo_default" {
   }
 
   subnet_ids = [
-    "${aws_subnet.public_subnet_1.id}",
-    "${aws_subnet.public_subnet_2.id}",
+    aws_subnet.public_subnet_1.id,
+    aws_subnet.public_subnet_2.id,
   ]
 
   tags = {

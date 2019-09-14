@@ -1,13 +1,13 @@
 resource "aws_instance" "demo_db" {
-  ami                  = "${data.aws_ami.ubuntu.id}"
-  availability_zone    = "${data.aws_availability_zones.available.names[0]}"
-  key_name             = "${var.ec2["key_pair"]}"
-  instance_type        = "${var.ec2["instance_type"]}"
+  ami                  = data.aws_ami.ubuntu.id
+  availability_zone    = data.aws_availability_zones.available.names[0]
+  key_name             = var.ec2["key_pair"]
+  instance_type        = var.ec2["instance_type"]
   vpc_security_group_ids = [
-    "${aws_security_group.demo_db.id}",
+    aws_security_group.demo_db.id,
   ]
 
-  subnet_id                   = "${aws_subnet.public_subnet_1.id}"
+  subnet_id                   = aws_subnet.public_subnet_1.id
   associate_public_ip_address = true
   user_data = <<EOF
 #!/bin/bash
@@ -25,24 +25,24 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # set password
-echo "ubuntu:${data.aws_ssm_parameter.ec2-password.value}" | chpasswd
+echo "ubuntu:${var.ec2["password"]}" | chpasswd
 sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
 service sshd restart
   EOF
 
   tags = {
-    Name = "${var.ec2["db_name"]}"
+    Name = var.ec2["db_name"]
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    password    = "${data.aws_ssm_parameter.ec2-password.value}"
-    host        = "${self.public_ip}"
+    password    = var.ec2["password"]
+    host        = self.public_ip
   }
 
   provisioner "file" {
-    source      = "${path.module}/../demo-db"
+    source      = "${path.module}/demo-db"
     destination = "/home/ubuntu/demo-db"
   }
 
