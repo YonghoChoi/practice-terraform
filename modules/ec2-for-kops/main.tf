@@ -54,9 +54,12 @@ service sshd restart
     when    = "destroy"
     inline = [
       "sudo kops delete cluster --name ${var.kops["cluster_name"]} --state s3://${var.s3_state_bucket_domain_name} --yes",
-      "sleep 30",
-      "sudo reboot",
+      "sleep 30"
     ]
+  }
+
+  timeouts {
+    delete = "30m"
   }
 }
 
