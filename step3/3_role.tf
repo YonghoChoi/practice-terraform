@@ -18,7 +18,7 @@ resource "aws_iam_role" "demo_k8s_role" {
 EOF
 
   tags = {
-    Name = "${var.title}"
+    Name = var.title
   }
 }
 
@@ -27,12 +27,12 @@ EOF
 # The instance profile can not be removed from the console. Use awscli to remove it. (aws iam delete-instance-profile --instance-profile-name demo_k8s_profile)
 resource "aws_iam_instance_profile" "demo_k8s_profile" {
   name = "demo_k8s_profile"
-  role = "${aws_iam_role.demo_k8s_role.name}"
+  role = aws_iam_role.demo_k8s_role.name
 }
 
 resource "aws_iam_role_policy" "demo_k8s_policy" {
   name = "demo_k8s_policy"
-  role = "${aws_iam_role.demo_k8s_role.id}"
+  role = aws_iam_role.demo_k8s_role.id
 
   policy = <<EOF
 {

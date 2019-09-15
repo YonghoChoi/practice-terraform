@@ -1,14 +1,14 @@
 resource "aws_instance" "demo_k8s" {
-  ami                  = "${data.aws_ami.ubuntu.id}"
-  availability_zone    = "${data.aws_availability_zones.available.names[0]}"
-  key_name             = "${var.ec2["key_pair"]}"
+  ami                  = data.aws_ami.ubuntu.id
+  availability_zone    = data.aws_availability_zones.available.names[0]
+  key_name             = var.ec2["key_pair"]
   instance_type        = "t2.medium"
-  iam_instance_profile = "${aws_iam_instance_profile.demo_k8s_profile.name}"
+  iam_instance_profile = aws_iam_instance_profile.demo_k8s_profile.name
   vpc_security_group_ids = [
-    "${aws_security_group.demo_k8s.id}",
+    aws_security_group.demo_k8s.id,
   ]
 
-  subnet_id                   = "${aws_subnet.public_subnet_1.id}"
+  subnet_id                   = aws_subnet.public_subnet_1.id
   associate_public_ip_address = true
   user_data = <<EOF
 #!/bin/bash
@@ -22,14 +22,14 @@ service sshd restart
   EOF
 
   tags = {
-    Name = "${var.title}"
+    Name = var.title
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    password    = "${data.aws_ssm_parameter.ec2_password.value}"
-    host        = "${self.public_ip}"
+    password    = data.aws_ssm_parameter.ec2_password.value
+    host        = self.public_ip
   }
 
   provisioner "file" {

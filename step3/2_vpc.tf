@@ -13,6 +13,6 @@ resource "aws_vpc" "demo_k8s" {
   instance_tenancy = "default"
 
   tags = {
-    Name = "${var.title}"
+    Name = var.title
   }
 }

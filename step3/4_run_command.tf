@@ -2,8 +2,8 @@ resource "null_resource" "run_coomand" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    password    = "${data.aws_ssm_parameter.ec2_password.value}"
-    host        = "${aws_instance.demo_k8s.public_ip}"
+    password    = data.aws_ssm_parameter.ec2_password.value
+    host        = aws_instance.demo_k8s.public_ip
   }
 
   provisioner "file" {
