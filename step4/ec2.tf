@@ -1,6 +1,6 @@
 module "ec2" {
   # source는 variables.tf, main.tf, outputs.tf 파일이 위치한 디렉터리 경로를 넣어준다.
-  source = "../modules/ec2"
+  source = "../modules/ec2-for-kops"
   name = "demo_k8s"
   key_pair = "yongho1037"
   ami_name = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"
