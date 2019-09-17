@@ -85,6 +85,7 @@ resource "null_resource" "run_coomand" {
       "sleep 10",
       "sudo kubectl get pods",
       "sudo kubectl get services",
+      "sudo chown -R ubuntu:ubuntu ~/.kube",
     ]
   }
 
