@@ -63,7 +63,7 @@ service sshd restart
   }
 }
 
-resource "null_resource" "run_coomand" {
+resource "null_resource" "run_command" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
